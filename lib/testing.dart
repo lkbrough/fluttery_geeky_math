@@ -48,7 +48,7 @@ class ClassroomTest{
 
   Future<void> getQuestions() async{
     questionsDisplay = <Widget>[];
-    return StreamBuilder<QuerySnapshot>(
+    StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('classes').document("$cid").collection("tests").document("$tid").collection("questions").snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
         if (snapshot.hasError) {
@@ -109,13 +109,11 @@ class RandomTest {
   int streak = 0;
   var currentQuestion;
   var display;
-  var previousResponse = null;
+  var previousResponse;
   TextEditingController response = TextEditingController();
   bool submitted = false;
 
-  RandomTest(this.type, this.uid) {
-    display = generateQuestion();
-  }
+  RandomTest(this.type, this.uid);
 
   Widget generateQuestion(){
     submitted = false;
@@ -182,8 +180,6 @@ class _TestDisplayState extends State<TestDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    test.generateQuestion();
-
     RaisedButton submit = RaisedButton(child: Text("Submit"), onPressed: check);
     return Scaffold(appBar: AppBar(title: Text("Geeky Math - Test")), body: Container(child: Column(children: <Widget>[test.display, submit])));
   }
