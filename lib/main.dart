@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttery_geeky_math/menu.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 FirebaseUser user;
@@ -25,18 +26,26 @@ class LoginScreen extends StatelessWidget {
   TextEditingController _lname = TextEditingController();
   TextEditingController _pword2 = TextEditingController();
 
-  Future<FirebaseUser> _handleSignIn(var context, String email, String password) async{
-    print(email);
+  Future<void> _handleSignIn(var context, String email, String password) async{
     AlertDialog dialog = new AlertDialog(
-        content: new Text("Loading")
+        content: new Text("Loading...")
     );
     showDialog(context: context, builder: (BuildContext context) => dialog);
     _auth.signInWithEmailAndPassword(email: email, password: password)
         .then((FirebaseUser user) {
       print("success");
-    }).catchError((e) => print(e));
+    }).catchError((e) {
+      Navigator.pop(context);
+      showDialog(context: context,
+          builder: (BuildContext context) =>
+              AlertDialog(content: Text("Incorrect Password")));
+      return;
+    }
+    );
     Navigator.pop(context);
-    return user;
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) => MainMenu(_auth)),
+    );
   }
 
   Future<String> _createUser(String email, String password) async{
@@ -99,17 +108,17 @@ class LoginScreen extends StatelessWidget {
     signUpScreen = Container(child: Column(children: [usernameSignUp, passwordSignUp, password2, firstname, lastname, signUp]), padding: EdgeInsets.all(16));
 
     return DefaultTabController(length: 2, child:
-      Scaffold(appBar:
-        AppBar(title: Text('Geeky Math'), bottom: TabBar(
-          tabs: [
-            Tab(text: "Login"),
-            Tab(text: "Sign Up")
-          ]
-        )),
-          body: TabBarView(
-            children: [loginScreen, signUpScreen],
-          )
-      )
+    Scaffold(appBar:
+    AppBar(title: Text('Geeky Math'), bottom: TabBar(
+        tabs: [
+          Tab(text: "Login"),
+          Tab(text: "Sign Up")
+        ]
+    )),
+        body: TabBarView(
+          children: [loginScreen, signUpScreen],
+        )
+    )
     );
   }
 }
