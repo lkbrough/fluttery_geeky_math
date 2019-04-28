@@ -2,85 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Classes extends StatefulWidget {
-  var _auth, cid, user;
-  Classes(this._auth, this.cid, this.user);
+  var _auth, cid, isTeacher;
+  Classes(this._auth, this.cid, this.isTeacher);
 
   @override
-  _ClassesState createState() => _ClassesState(_auth, cid, user);
+  _ClassesState createState() => _ClassesState(_auth, cid, isTeacher);
 }
 
 class _ClassesState extends State<Classes> {
-  var _auth, cid, user;
+  var _auth, cid, isTeacher;
   var students;
   var tests;
   var studentsDisplay;
   var testsDisplay;
 
-  _ClassesState(this._auth, this.cid, this.user);
-
-  Future<void> getStudents(var masterContext) async{
-    studentsDisplay = <Widget>[];
-    print("here");
-
-    StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('classes').document("$cid").collection("students").snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-          if (snapshot.hasError) {
-            studentsDisplay.append(Card(child: Text("Error, please try again later")));
-            print("error");
-            return;
-          }
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              studentsDisplay.append(Card(child: Text("Loading...")));
-              print("loading");
-              return;
-            default:
-              students = snapshot.data.documents;
-              print("generating");
-              studentsDisplay = List<Widget>.generate(snapshot.data.documents.length, (int index) {
-                return ListTile(
-                  title: Text("${students[index]["name"]}"),
-                  onTap: user["teacher"]?Navigator.push(masterContext, MaterialPageRoute(builder: (masterContext) => StudentInfo(cid, students[index]))):(){},
-                );
-              });
-          }
-        }
-    );
-    print("finished");
-  }
-
-  Future<void> getTests(var masterContext) async{
-    testsDisplay = <Widget>[];
-
-    StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('classes').document("$cid").collection("tests").snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-          if (snapshot.hasError) {
-            testsDisplay.append(Card(child: Text("Error, please try again later")));
-            return;
-          }
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              testsDisplay.append(Card(child: Text("Loading...")));
-              return;
-            default:
-              tests = snapshot.data.documents;
-              testsDisplay = List<Widget>.generate(snapshot.data.documents.length, (int index) {
-                return ListTile(
-                  title: Text("${tests[index]["name"]}"),
-                  // onTap: user["teacher"]?Navigator.push(masterContext, MaterialPageRoute(builder: (masterContext) => TestInfo(cid, tests[index]))):(){},
-                );
-              });
-          }
-        }
-    );
-  }
+  _ClassesState(this._auth, this.cid, this.isTeacher);
   
   @override
   Widget build(BuildContext context) {
-    getStudents(context);
-    getTests(context);
     return DefaultTabController(length: 2, child:
     Scaffold(appBar:
     AppBar(title: Text('Classroom'), bottom: TabBar(
@@ -90,7 +29,43 @@ class _ClassesState extends State<Classes> {
         ]
     )),
         body: TabBarView(
-          children: [Container(child: Column(children: studentsDisplay)), Container(child: Column(children: testsDisplay))],
+          children: [Container(child: Column(children: <Widget>[StreamBuilder<QuerySnapshot>(
+            stream: Firestore.instance.collection('classes').document('$cid').collection('students').snapshots(),
+            builder: (BuildContext subContext, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError)
+                return Text('Error: ${snapshot.error}');
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting: return Text('Loading...');
+                default:
+                  return Expanded(child: ListView(
+                    children: snapshot.data.documents.map((DocumentSnapshot document) {
+                      return new ListTile(
+                        title: Text(document['name']),
+                        // onTap: isTeacher?Navigator.push(context, MaterialPageRoute(builder: (context) => StudentInfo(cid, document))):(){},
+                      );
+                    }).toList(),
+                  ));
+              }
+            },
+          )])),
+    Container(child: Column(children: <Widget>[StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('classes').document("$cid").collection('tests').snapshots(),
+      builder: (BuildContext subContext, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError)
+          return Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting: return Text('Loading...');
+          default:
+            return Expanded(child: ListView(
+              children: snapshot.data.documents.map((DocumentSnapshot document) {
+                return new ListTile(
+                  title: new Text(document['name']),
+                );
+            }).toList(),
+            ));
+        }
+      },
+    )]))],
         )
     )
     );
