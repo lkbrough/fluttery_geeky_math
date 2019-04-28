@@ -13,13 +13,17 @@ class MainMenu extends StatelessWidget {
 
   void goToClass(var context){
     _auth.currentUser().then( (u) {
-      Firestore.instance
-          .collection('users')
-          .document('${u.uid}')
-          .get()
-          .then((DocumentSnapshot ds) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => Classes(_auth, ds.data["class_id"], ds.data["id"])));
-          });
+      Firestore.instance.collection('users').document('${u.uid}').get().then((DocumentSnapshot ds) {
+        if(ds.data["class_id"] != "") {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Classes(_auth, ds.data["class_id"], ds.data["teacher"])));
+        }
+        else {
+          AlertDialog dialog = new AlertDialog(
+              content: new Text("You don't have a class! Join one through your profile or become a teacher!")
+          );
+          showDialog(context: context, builder: (BuildContext context) => dialog);
+        }
+      });
     });
   }
 
