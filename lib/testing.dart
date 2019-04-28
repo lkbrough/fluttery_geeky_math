@@ -69,7 +69,7 @@ class ClassroomTest{
             questionsDisplay = List<Widget>.generate(snapshot.data.documents.length, (int index) {
               return Card(child: Column(children: <Widget>[
                 Text("${questions[index].question}"),
-                TextField(controller: textEditingControllers[index], decoration: InputDecoration(labelText: "${questions[index].hint}",), keyboardType: TextInputType.numberWithOptions(signed: false, decimal: false),),
+                TextField(controller: textEditingControllers[index], decoration: InputDecoration(labelText: "${questions[index].hint}",), keyboardType: TextInputType.number,),
               ]));
             });
         }
@@ -132,7 +132,7 @@ class RandomTest {
 
     questionCard = Card(child: Container(child: Column(children: <Widget>[Text("${currentQuestion.question}"),
       Divider(),
-      TextField(controller: response, decoration: InputDecoration(labelText: "${currentQuestion.hint}")),
+      TextField(controller: response, decoration: InputDecoration(labelText: "${currentQuestion.hint}"), keyboardType: TextInputType.number),
       Divider(),
       previousResponse == null?Text(""):Text("${previousResponse[0]}"),
       (previousResponse != null && previousResponse[0] == "Incorrect")?Text("Correct Answer: ${previousResponse[1]}"):Text(""),
