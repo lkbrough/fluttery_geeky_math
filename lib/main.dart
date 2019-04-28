@@ -33,7 +33,6 @@ class LoginScreen extends StatelessWidget {
     showDialog(context: context, builder: (BuildContext context) => dialog);
     _auth.signInWithEmailAndPassword(email: email, password: password)
         .then((FirebaseUser user) {
-      print("success");
     }).catchError((e) {
       Navigator.pop(context);
       showDialog(context: context,
@@ -63,7 +62,7 @@ class LoginScreen extends StatelessWidget {
       }
     });
     Firestore.instance.collection('users').document(uid)
-        .setData({ 'class_id': -1, 'first_name': fname, 'last_name': lname, 'teacher': false, 'teacher_id': "", 'user_id': '$uid' });
+        .setData({ 'class_id': "", 'first_name': fname, 'last_name': lname, 'teacher': false, 'teacher_id': "", 'user_id': '$uid' });
   }
 
   Future<bool> _newUser(var context, String email, String password, String password2, String first_name, String last_name) async{

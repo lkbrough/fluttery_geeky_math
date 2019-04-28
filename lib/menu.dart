@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttery_geeky_math/testing.dart';
 import 'package:fluttery_geeky_math/classes.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final int test_options = 3;
 final List<String> test_types = ["Decimal to Binary", "Binary to Decimal", "Mixed Binary/Decimal"];
@@ -10,14 +11,26 @@ class MainMenu extends StatelessWidget {
 
   MainMenu(this._auth);
 
+  void goToClass(var context){
+    _auth.currentUser().then( (u) {
+      Firestore.instance
+          .collection('users')
+          .document('${u.uid}')
+          .get()
+          .then((DocumentSnapshot ds) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Classes(_auth, ds.data["class_id"], ds.data["id"])));
+          });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Container menu;
 
-    RaisedButton classManage = RaisedButton(child: Text("Your class"), onPressed: (){} );
+    RaisedButton classManage = RaisedButton(child: Text("Your class"), onPressed: (){ goToClass(context); } );
     RaisedButton randomTest = RaisedButton(child: Text("Start a Random Test"), onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => RandomTestSelection(_auth))); } );
 
-    menu = Container(child: Column(children: <Widget>[classManage, randomTest],));
+    menu = Container(child: Center(child: Column(children: <Widget>[classManage, randomTest],)));
 
     return Scaffold(appBar: AppBar(title: Text("Geeky Math - Menu")), body: menu);
   }
