@@ -17,6 +17,13 @@ class _ClassesState extends State<Classes> {
   var testsDisplay;
 
   _ClassesState(this._auth, this.cid, this.isTeacher);
+
+  void teacherCheck(var context, var document) {
+    if(isTeacher) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => StudentInfo(cid, document)));
+    }
+      return;
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -41,7 +48,7 @@ class _ClassesState extends State<Classes> {
                     children: snapshot.data.documents.map((DocumentSnapshot document) {
                       return new ListTile(
                         title: Text(document['name']),
-                        // onTap: isTeacher?Navigator.push(context, MaterialPageRoute(builder: (context) => StudentInfo(cid, document))):(){},
+                        onTap: (){teacherCheck(context, document); },
                       );
                     }).toList(),
                   ));
@@ -79,10 +86,6 @@ class StudentInfo extends StatelessWidget {
 
   StudentInfo(this.cid, this.info);
 
-  Stream<QuerySnapshot> getTestsTakenByStudent() {
-    return Firestore.instance.collection("classes").document("$cid").collection("tests").where("taken_by", arrayContains: "${info["id"]}").snapshots();
-  }
-
   @override
   Widget build(BuildContext context){
     Text avg = Text("Test Average: ${info["score_avg"]}");
@@ -91,7 +94,7 @@ class StudentInfo extends StatelessWidget {
     testNames = <Widget>[];
 
     StreamBuilder<QuerySnapshot>(
-        stream: getTestsTakenByStudent(),
+        stream: Firestore.instance.collection("classes").document("$cid").collection("tests").where("taken_by", arrayContains: "${info["id"]}").snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData)
             return Text("");
@@ -110,7 +113,6 @@ class StudentInfo extends StatelessWidget {
     ListView scores = ListView.builder(
         itemCount: info["test scores"].length,
         itemBuilder: (BuildContext ctxt, int index) {
-
           return ListTile(title: Text("${testNames[index]}"), subtitle: Text("${info["test scores"][index]}"));
         });
 
