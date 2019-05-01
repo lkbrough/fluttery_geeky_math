@@ -91,16 +91,22 @@ class ClassroomTest{
     var taken_list;
     Firestore.instance.collection("classes").document("$cid").collection("tests").document("$tid").get().then((DocumentSnapshot ds) {
       taken_list = ds["taken_by"];
-    });
-    taken_list.append("$uid");
-    Firestore.instance.collection("classes").document("$cid").collection("tests").document("$tid").updateData({"taken_by": taken_list});
+      taken_list.append("$uid");
+      Firestore.instance.collection("classes").document("$cid").collection("tests").document("$tid").updateData({"taken_by": taken_list});
 
-    var grades;
-    Firestore.instance.collection("classes").document("$cid").collection("students").document("$uid").get().then((DocumentSnapshot ds) {
-      grades = ds["test scores"];
+      var grades;
+      var avg;
+      Firestore.instance.collection("classes").document("$cid").collection("students").document("$uid").get().then((DocumentSnapshot dsub) {
+        grades = ds["test_scores"];
+        grades.addEntries(MapEntry<String, double>("${ds["name"]}", grade));
+        avg = ds["score_avg"];
+        avg += grade;
+        avg /= 2;
+        Firestore.instance.collection("classes").document("$cid").collection("students").document("$uid").updateData({"test scores": grades, "score_avg": avg});
+      });
     });
-    grades.append(grade);
-    Firestore.instance.collection("classes").document("$cid").collection("students").document("$uid").updateData({"test scores": grades});
+
+
   }
 }
 
