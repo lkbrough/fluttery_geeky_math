@@ -103,3 +103,68 @@ class StudentInfo extends StatelessWidget {
     return Scaffold(appBar: AppBar(title: Text("Student: ${info["name"]}")), body: Container(child: Column(children: <Widget>[avg, Divider(), Expanded(child: scores)]), padding: EdgeInsets.all(20)));
   }
 }
+
+class TestInfo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold();
+  }
+}
+
+class TestCreation extends StatefulWidget {
+  @override
+  _TestCreationState createState() => _TestCreationState();
+}
+
+class _TestCreationState extends State<TestCreation> {
+  TextEditingController _testName = TextEditingController();
+  List<QuestionCreation> questions = <QuestionCreation>[QuestionCreation()];
+  int numQuestions = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(title: Text("New Test")),
+      body: Container(),
+    );
+  }
+}
+
+class QuestionCreation extends StatefulWidget {
+  @override
+  _QuestionCreationState createState() => _QuestionCreationState();
+}
+
+class _QuestionCreationState extends State<QuestionCreation> {
+  int _type;
+  int _question;
+
+  TextEditingController _questionInput;
+
+  void _handleRadioValueChange(int value) {
+    setState( () {
+      _type = value;
+
+      _question = int.parse(_questionInput.text);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Radio decimalToBinary = Radio(value: 1, groupValue: _type, onChanged: _handleRadioValueChange);
+    Radio binaryToDecimal = Radio(value: 2, groupValue: _type, onChanged: _handleRadioValueChange);
+    Radio random = Radio(value: 3, groupValue: _type, onChanged: _handleRadioValueChange);
+
+    TextField question = TextField(controller: _questionInput, decoration: InputDecoration(labelText: "Question (In Decimal)"), keyboardType: TextInputType.numberWithOptions(signed: false, decimal: false),);
+
+    return Card(child:
+      Container(padding: EdgeInsets.all(15), child:
+        Column(children: <Widget>[
+          question,
+          Row(children: <Widget>[decimalToBinary, Text("Decimal to Binary"), binaryToDecimal, Text("Binary to Decimal"), random, Text("Either (Let the test Pick)")])
+        ])
+      )
+    );
+  }
+}
+
+
