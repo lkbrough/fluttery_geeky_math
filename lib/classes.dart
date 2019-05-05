@@ -90,33 +90,16 @@ class StudentInfo extends StatelessWidget {
   Widget build(BuildContext context){
     Text avg = Text("Test Average: ${info["score_avg"]}");
 
-    var testNames;
-    testNames = <Widget>[];
-
-    StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection("classes").document("$cid").collection("tests").where("taken_by", arrayContains: "${info["id"]}").snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData)
-            return Text("");
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              testNames.append(Card(child: Text("Loading...")));
-              return null;
-            default:
-              testNames = List<Widget>.generate(snapshot.data.documents.length, (int index) {
-                return Text("${testNames[index]["name"]}");
-              });
-          }
-        }
-    );
+    var test_names = info["test_scores"].keys.toList();
+    var test_scores = info["test_scores"].values.toList();
 
     ListView scores = ListView.builder(
-        itemCount: info["test scores"].length,
+        itemCount: info["test_scores"].entries.length,
         itemBuilder: (BuildContext ctxt, int index) {
-          return ListTile(title: Text("${testNames[index]}"), subtitle: Text("${info["test scores"][index]}"));
+          return ListTile(title: Text("${test_names[index]}"), subtitle: Text("${test_scores[index]}"));
         });
 
 
-    return Scaffold(appBar: AppBar(title: Text("Student: ${info["name"]}")), body: Container(child: Column(children: <Widget>[avg, Divider(), scores])));
+    return Scaffold(appBar: AppBar(title: Text("Student: ${info["name"]}")), body: Container(child: Column(children: <Widget>[avg, Divider(), Expanded(child: scores)]), padding: EdgeInsets.all(20)));
   }
 }
