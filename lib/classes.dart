@@ -135,8 +135,20 @@ class _TestCreationState extends State<TestCreation> {
 
   }
 
-  void submit() {
+  void submit(var context) {
+    DocumentReference newDocument = Firestore.instance.collection('classes').document('$cid').collection('tests').document();
 
+    int decimalNumber;
+    int binaryNumber;
+    for(QuestionCreation i in questions) {
+      decimalNumber = int.parse("${i._questionInput.text}");
+      binaryNumber = int.parse(decimalNumber.toRadixString(2));
+      newDocument.collection('questions').document().setData({"type": i._type, "decimal": decimalNumber, "binary": binaryNumber});
+    }
+
+    newDocument.setData({"avaliable" : true, "name" : _testName.text, "reveal_all" : true, "taken_by": {} });
+
+    Navigator.pop(context);
   }
 
   @override
@@ -145,34 +157,36 @@ class _TestCreationState extends State<TestCreation> {
       body: Container(child: Column(children: <Widget>[Container(child: TextField(controller: _testName, decoration: InputDecoration(labelText: "Test Name"),), padding: EdgeInsets.all(20)),
         Expanded(child: ListView.builder(itemCount: questions.length, itemBuilder: (BuildContext buildContext, int index) {
           return questions[index];
-        },))])),
+        },)),
+        RaisedButton(onPressed: (){ submit(context); }, child: Text("Submit")),
+      ])),
       floatingActionButton: FloatingActionButton(onPressed: newQuestion, child: Icon(Icons.add)),
     );
   }
 }
 
 class QuestionCreation extends StatefulWidget {
+  var _type;
+  TextEditingController _questionInput = TextEditingController();
+
   @override
   _QuestionCreationState createState() => _QuestionCreationState();
 }
 
 class _QuestionCreationState extends State<QuestionCreation> {
-  var _type;
-  TextEditingController _questionInput;
-
   void _handleRadioValueChange(var value) {
     setState( () {
-      _type = value;
+      widget._type = value;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Radio decimalToBinary = Radio(value: 1, groupValue: _type, onChanged: _handleRadioValueChange);
-    Radio binaryToDecimal = Radio(value: 2, groupValue: _type, onChanged: _handleRadioValueChange);
-    Radio random = Radio(value: 3, groupValue: _type, onChanged: _handleRadioValueChange);
+    Radio decimalToBinary = Radio(value: 1, groupValue: widget._type, onChanged: _handleRadioValueChange);
+    Radio binaryToDecimal = Radio(value: 2, groupValue: widget._type, onChanged: _handleRadioValueChange);
+    Radio random = Radio(value: 3, groupValue: widget._type, onChanged: _handleRadioValueChange);
 
-    TextField question = TextField(controller: _questionInput, decoration: InputDecoration(labelText: "Question (In Decimal)"), keyboardType: TextInputType.numberWithOptions(signed: false, decimal: false),);
+    TextField question = TextField(controller: widget._questionInput, decoration: InputDecoration(labelText: "Question (In Decimal)"), keyboardType: TextInputType.numberWithOptions(signed: false, decimal: false),);
 
     return Card(child:
       Container(padding: EdgeInsets.all(15), child:
