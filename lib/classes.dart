@@ -72,7 +72,8 @@ class _ClassesState extends State<Classes> {
             ));
         }
       },
-    )]))],
+    ), Container(child: Align(alignment: Alignment.bottomRight, child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[FloatingActionButton(child: Icon(Icons.add), onPressed: (() {Navigator.push(context, MaterialPageRoute(builder: (context) => TestCreation(cid)));}))])), padding: EdgeInsets.all(17)),
+    ]))],
         )
     )
     );
@@ -112,19 +113,40 @@ class TestInfo extends StatelessWidget {
 }
 
 class TestCreation extends StatefulWidget {
+  var cid;
+
+  TestCreation(this.cid);
+
   @override
-  _TestCreationState createState() => _TestCreationState();
+  _TestCreationState createState() => _TestCreationState(cid);
 }
 
 class _TestCreationState extends State<TestCreation> {
+  var cid;
   TextEditingController _testName = TextEditingController();
   List<QuestionCreation> questions = <QuestionCreation>[QuestionCreation()];
-  int numQuestions = 1;
+
+  _TestCreationState(this.cid);
+  
+  void newQuestion() {
+    super.setState((){
+      questions.add(QuestionCreation());
+    });
+
+  }
+
+  void submit() {
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(title: Text("New Test")),
-      body: Container(),
+      body: Container(child: Column(children: <Widget>[Container(child: TextField(controller: _testName, decoration: InputDecoration(labelText: "Test Name"),), padding: EdgeInsets.all(20)),
+        Expanded(child: ListView.builder(itemCount: questions.length, itemBuilder: (BuildContext buildContext, int index) {
+          return questions[index];
+        },))])),
+      floatingActionButton: FloatingActionButton(onPressed: newQuestion, child: Icon(Icons.add)),
     );
   }
 }
@@ -135,16 +157,12 @@ class QuestionCreation extends StatefulWidget {
 }
 
 class _QuestionCreationState extends State<QuestionCreation> {
-  int _type;
-  int _question;
-
+  var _type;
   TextEditingController _questionInput;
 
-  void _handleRadioValueChange(int value) {
+  void _handleRadioValueChange(var value) {
     setState( () {
       _type = value;
-
-      _question = int.parse(_questionInput.text);
     });
   }
 
@@ -160,7 +178,7 @@ class _QuestionCreationState extends State<QuestionCreation> {
       Container(padding: EdgeInsets.all(15), child:
         Column(children: <Widget>[
           question,
-          Row(children: <Widget>[decimalToBinary, Text("Decimal to Binary"), binaryToDecimal, Text("Binary to Decimal"), random, Text("Either (Let the test Pick)")])
+          Row(children: <Widget>[decimalToBinary, Text("Decimal to Binary"), binaryToDecimal, Text("Binary to Decimal"), random, Text("Either")])
         ])
       )
     );
