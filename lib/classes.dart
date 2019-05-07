@@ -193,7 +193,7 @@ class _TestCreationState extends State<TestCreation> {
     return Scaffold(appBar: AppBar(title: Text("New Test")),
       body: Builder(builder: (BuildContext snackBarContext) {
         return Container(child: Column(children: <Widget>[Container(child: TextField(controller: _testName, decoration: InputDecoration(labelText: "Test Name"),), padding: EdgeInsets.all(20)),
-          Expanded(flex: 9, child: ListView.builder(itemCount: questions.length, itemBuilder: (BuildContext buildContext, int index) {
+          Expanded(flex: 6, child: ListView.builder(itemCount: questions.length, itemBuilder: (BuildContext buildContext, int index) {
             return questions[index];
           },)),
           Expanded(flex: 1, child: Container(padding: EdgeInsets.all(13), child: Row(children: <Widget>[Spacer(flex: 5), Container(child: Align(alignment: Alignment.bottomCenter, child: RaisedButton(onPressed: (){ submit(context); }, child: Text("Submit")))), Spacer(flex: 3),

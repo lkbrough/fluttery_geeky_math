@@ -10,7 +10,7 @@ Future<void> signOut() async{
   return _auth.signOut();
 }
 
-// Color Palatte: https://colorhunt.co/palette/138016
+// Color Palette: https://colorhunt.co/palette/138016
 // Colors.grey.shade200
 // Colors.tealAccent.shade400
 // Colors.lightBlue.shade600
