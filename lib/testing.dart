@@ -142,7 +142,7 @@ class RandomTest {
     questionCard = Card(child: Container(child: Column(children: <Widget>[Text("${currentQuestion.question}"),
       Divider(),
       TextField(controller: response, decoration: InputDecoration(labelText: "${currentQuestion.hint}"), keyboardType: TextInputType.number),
-      Divider(),
+      Text(""),
       previousResponse == null?Text(""):Text("${previousResponse[0]}"),
       (previousResponse != null && previousResponse[0] == "Incorrect")?Text("Correct Answer: ${previousResponse[1]}"):Text(""),
       Text("Streak: $streak")
