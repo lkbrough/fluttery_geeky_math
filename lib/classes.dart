@@ -166,7 +166,7 @@ class _TestCreationState extends State<TestCreation> {
         questions.add(QuestionCreation());
       }
       else {
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Currently cannot support more than 10 questions"), duration: Duration(seconds: 10)));
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Currently cannot support more than 10 questions"), duration: Duration(seconds: 4)));
       }
     });
 
@@ -193,12 +193,14 @@ class _TestCreationState extends State<TestCreation> {
     return Scaffold(appBar: AppBar(title: Text("New Test")),
       body: Builder(builder: (BuildContext snackBarContext) {
         return Container(child: Column(children: <Widget>[Container(child: TextField(controller: _testName, decoration: InputDecoration(labelText: "Test Name"),), padding: EdgeInsets.all(20)),
-          Expanded(child: ListView.builder(itemCount: questions.length, itemBuilder: (BuildContext buildContext, int index) {
+          Expanded(flex: 9, child: ListView.builder(itemCount: questions.length, itemBuilder: (BuildContext buildContext, int index) {
             return questions[index];
           },)),
-          RaisedButton(onPressed: (){ submit(context); }, child: Text("Submit")),
-          Container(child: Align(alignment: Alignment.bottomRight, child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[FloatingActionButton(onPressed: () { newQuestion(snackBarContext); }, child: Icon(Icons.add))])), padding: EdgeInsets.all(17))
+          Expanded(flex: 1, child: Container(padding: EdgeInsets.all(13), child: Row(children: <Widget>[Spacer(flex: 5), Container(child: Align(alignment: Alignment.bottomCenter, child: RaisedButton(onPressed: (){ submit(context); }, child: Text("Submit")))), Spacer(flex: 3),
+            FloatingActionButton(child: Icon(Icons.add), onPressed: (() { newQuestion(snackBarContext); }))
+          ])))
     ])); }),
+
     );
   }
 }
