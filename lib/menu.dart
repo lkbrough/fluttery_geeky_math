@@ -15,7 +15,7 @@ class MainMenu extends StatelessWidget {
     _auth.currentUser().then( (u) {
       Firestore.instance.collection('users').document('${u.uid}').get().then((DocumentSnapshot ds) {
         if(ds.data["class_id"] != "") {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => Classes(_auth, ds.data["class_id"], ds.data["teacher"])));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Classes(_auth, ds.data["class_id"], ds.data["user_id"], ds.data["teacher"])));
         }
         else {
           AlertDialog dialog = new AlertDialog(

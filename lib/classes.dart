@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttery_geeky_math/testing.dart';
 
 class Classes extends StatefulWidget {
-  var _auth, cid, isTeacher;
-  Classes(this._auth, this.cid, this.isTeacher);
+  var _auth, cid, uid, isTeacher;
+  Classes(this._auth, this.cid, this.uid, this.isTeacher);
 
   @override
-  _ClassesState createState() => _ClassesState(_auth, cid, isTeacher);
+  _ClassesState createState() => _ClassesState(_auth, cid, uid, isTeacher);
 }
 
 class _ClassesState extends State<Classes> {
-  var _auth, cid, isTeacher;
+  var _auth, cid, uid, isTeacher;
   var students;
   var tests;
   var studentsDisplay;
   var testsDisplay;
 
-  _ClassesState(this._auth, this.cid, this.isTeacher);
+  _ClassesState(this._auth, this.cid, this.uid, this.isTeacher);
 
-  void studentInfoTeacherCheck(var context, var document) {
+  void studentInfoTeacherCheck(var context, DocumentSnapshot document) {
     if(isTeacher) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => StudentInfo(cid, document)));
     }
-      return;
   }
 
   void testTeacherCheck(var context, var document, var tid) {
@@ -30,7 +30,7 @@ class _ClassesState extends State<Classes> {
       Navigator.push(context, MaterialPageRoute(builder: (context) => TestInfo(cid, tid, document)));
     }
     else {
-      // add student code to take the test here
+      Navigator.push(context, MaterialPageRoute(builder: (context) => TestDisplay(ClassroomTest(uid, cid, tid))));
     }
   }
   

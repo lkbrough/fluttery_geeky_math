@@ -40,24 +40,25 @@ class Question {
 
 class ClassroomTest{
   var uid, cid, tid; // user id, classroom id, test id
-  var questionsDisplay;
+  var questionDisplays;
   var textEditingControllers;
   var questions;
+  var display;
 
   ClassroomTest(this.uid, this.cid, this.tid);
 
   Future<void> getQuestions() async{
-    questionsDisplay = <Widget>[];
+    questionDisplays = <Widget>[];
     StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('classes').document("$cid").collection("tests").document("$tid").collection("questions").snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
         if (snapshot.hasError) {
-          questionsDisplay.append(Card(child: Text("Error, please try again later")));
+          questionDisplays.append(Card(child: Text("Error, please try again later")));
           return;
         }
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
-            questionsDisplay.append(Card(child: Text("Loading...")));
+            questionDisplays.append(Card(child: Text("Loading...")));
             return;
           default:
             textEditingControllers = List<TextEditingController>.generate(snapshot.data.documents.length, (int index) {
@@ -66,7 +67,7 @@ class ClassroomTest{
             questions = List<Question>.generate(snapshot.data.documents.length, (int index){
               return Question(snapshot.data.documents[index].data["type"], snapshot.data.documents[index].data["decimal"]);
             });
-            questionsDisplay = List<Widget>.generate(snapshot.data.documents.length, (int index) {
+            questionDisplays = List<Widget>.generate(snapshot.data.documents.length, (int index) {
               return Card(child: Column(children: <Widget>[
                 Text("${questions[index].question}"),
                 TextField(controller: textEditingControllers[index], decoration: InputDecoration(labelText: "${questions[index].hint}",), keyboardType: TextInputType.number,),
@@ -75,6 +76,10 @@ class ClassroomTest{
         }
       }
     );
+
+    display = Expanded(child: ListView.builder(itemCount: questionDisplays.length, itemBuilder: (BuildContext buildContext, int index) {
+      return questionDisplays[index];
+    },));
   }
 
   Future<void> grade() async{
@@ -176,17 +181,30 @@ class _TestDisplayState extends State<TestDisplay> {
   var test;
 
   _TestDisplayState(this.test){
-    test.generateQuestion();
+    if(test is RandomTest) {
+      test.generateQuestion();
+    }
+    else if(test is ClassroomTest) {
+      test.getQuestions();
+    }
   }
 
-  void check() {
-    test.check();
-    super.setState((){ test.generateQuestion(); });
+  void check(var context) {
+    super.setState((){
+      if(test is RandomTest) {
+        test.check();
+        test.generateQuestion();
+      }
+      else if(test is ClassroomTest) {
+        test.grade();
+        Navigator.pop(context);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    RaisedButton submit = RaisedButton(child: Text("Submit"), onPressed: check);
+    RaisedButton submit = RaisedButton(child: Text("Submit"), onPressed: () { check(context); } );
     return Scaffold(appBar: AppBar(title: Text("Geeky Math - Test")), body: Container(child: Column(children: <Widget>[test.display, submit])));
   }
 }
