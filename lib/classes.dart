@@ -20,7 +20,7 @@ class _ClassesState extends State<Classes> {
   _ClassesState(this._auth, this.cid, this.uid, this.isTeacher);
 
   void studentInfoTeacherCheck(var context, DocumentSnapshot document) {
-    if(isTeacher) {
+    if(isTeacher || document["id"] == uid) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => StudentInfo(cid, document)));
     }
   }
