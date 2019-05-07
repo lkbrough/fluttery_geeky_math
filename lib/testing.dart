@@ -11,23 +11,23 @@ class Question {
   Question(this.type, this.question){
     if (type == 1) {
       answer = int.parse(question).toRadixString(2);
-      hint = "Convert number to binary";
+      hint = "Convert number above to binary";
     }
     else if (type == 2) {
       answer = question;
       question = int.parse(answer).toRadixString(2);
-      hint = "Convert number to Decimal";
+      hint = "Convert number above to Decimal";
     }
     else if (type == 3) {
       var random = new Random();
       if(random.nextInt(1) == 2){
         answer = question;
         question = int.parse(answer).toRadixString(2);
-        hint = "Convert number to Decimal";
+        hint = "Convert number above to Decimal";
       }
       else {
         answer = int.parse(question).toRadixString(2);
-        hint = "Convert number to binary";
+        hint = "Convert number above to binary";
       }
     }
   }
@@ -40,79 +40,77 @@ class Question {
 
 class ClassroomTest{
   var uid, cid, tid; // user id, classroom id, test id
-  var questionDisplays;
-  var textEditingControllers;
-  var questions;
-  var display;
+  List<TextEditingController> textEditingControllers;
 
   ClassroomTest(this.uid, this.cid, this.tid);
 
-  Future<void> getQuestions() async{
-    questionDisplays = <Widget>[];
-    StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('classes').document("$cid").collection("tests").document("$tid").collection("questions").snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-        if (snapshot.hasError) {
-          questionDisplays.append(Card(child: Text("Error, please try again later")));
-          return;
-        }
+  Widget getQuestions(){
+    textEditingControllers = List(10);
+    for(int i = 0; i < 10; i++) {
+      textEditingControllers[i] = new TextEditingController();
+    }
+    int index = -1;
+    Question q;
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('classes').document('$cid').collection('tests').document('$tid').collection('questions').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError)
+          return Text("Error: ${snapshot.error}");
         switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            questionDisplays.append(Card(child: Text("Loading...")));
-            return;
+          case ConnectionState.waiting: return Text("Loading...");
           default:
-            textEditingControllers = List<TextEditingController>.generate(snapshot.data.documents.length, (int index) {
-              return TextEditingController();
-            });
-            questions = List<Question>.generate(snapshot.data.documents.length, (int index){
-              return Question(snapshot.data.documents[index].data["type"], snapshot.data.documents[index].data["decimal"]);
-            });
-            questionDisplays = List<Widget>.generate(snapshot.data.documents.length, (int index) {
-              return Card(child: Column(children: <Widget>[
-                Text("${questions[index].question}"),
-                TextField(controller: textEditingControllers[index], decoration: InputDecoration(labelText: "${questions[index].hint}",), keyboardType: TextInputType.number,),
-              ]));
-            });
+            return Expanded(child: ListView(
+              children: snapshot.data.documents.map((DocumentSnapshot document) {
+                index++;
+                q = Question(document.data['type'], document.data['decimal'].toString());
+                return Card(child: Container(padding: EdgeInsets.all(16), child: Column(children: <Widget>[
+                  Text("${q.question}"),
+                  Divider(),
+                  TextField(controller: textEditingControllers[index], decoration: InputDecoration(labelText: "${q.hint}",), keyboardType: TextInputType.number,)
+                ])));
+              }).toList(),
+            ));
         }
       }
     );
-
-    display = Expanded(child: ListView.builder(itemCount: questionDisplays.length, itemBuilder: (BuildContext buildContext, int index) {
-      return questionDisplays[index];
-    },));
   }
 
   Future<void> grade() async{
-    double grade;
-    int num_questions = questions.length;
-    int correct = 0;
-    for (var i = 0; i < num_questions; i++){
-      if(questions[i].check(textEditingControllers[i].text.toString())){
-        correct += 1;
-      }
-    }
-    grade = correct / grade;
-
+    double grade = 100;
     var taken_list;
-    Firestore.instance.collection("classes").document("$cid").collection("tests").document("$tid").get().then((DocumentSnapshot ds) {
-      taken_list = ds["taken_by"];
-      taken_list.append("$uid");
-      Firestore.instance.collection("classes").document("$cid").collection("tests").document("$tid").updateData({"taken_by": taken_list});
+    var grades;
+    var avg;
+    Question q;
+    int correct = 0;
+    int count = 0;
 
-      var grades;
-      var avg;
-      Firestore.instance.collection("classes").document("$cid").collection("students").document("$uid").get().then((DocumentSnapshot dsub) {
-        grades = ds["test_scores"];
-        grades.addEntries(MapEntry<String, double>("${ds["name"]}", grade));
-        avg = ds["score_avg"];
-        avg += grade;
-        avg /= 2;
-        Firestore.instance.collection("classes").document("$cid").collection("students").document("$uid").updateData({"test scores": grades, "score_avg": avg});
+    Firestore.instance.collection("classes").document("$cid").collection("tests").document("$tid").collection("questions").snapshots().listen( (data) {
+      data.documents.forEach( (d) {
+        q = Question(d.data['type'], d.data['decimal'].toString());
+        if(q.check(textEditingControllers[count].text)){
+          correct++;
+        }
+        count++;
+      });
+      grade = (correct/count)*100;
+
+      Firestore.instance.collection("classes").document("$cid").collection("tests").document("$tid").get().then((DocumentSnapshot ds) {
+        taken_list = List.from(ds["taken_by"], growable: true);
+        taken_list.add("$uid");
+        Firestore.instance.collection("classes").document("$cid").collection("tests").document("$tid").updateData({"taken_by": taken_list});
+        Firestore.instance.collection("classes").document("$cid").collection("students").document("$uid").get().then((DocumentSnapshot dsub) {
+          grades = dsub["test_scores"];
+          grades.addEntries([MapEntry<String, double>("${ds["name"]}", grade)]);
+          avg = dsub["score_avg"];
+          avg += grade;
+          avg /= 2;
+          Firestore.instance.collection("classes").document("$cid").collection("students").document("$uid").updateData({"test_scores": grades, "score_avg": avg});
+        });
       });
     });
-
-
   }
+
 }
 
 class RandomTest {
@@ -179,6 +177,8 @@ class TestDisplay extends StatefulWidget {
 
 class _TestDisplayState extends State<TestDisplay> {
   var test;
+  Widget display;
+  bool questionsDelivered = false;
 
   _TestDisplayState(this.test){
     if(test is RandomTest) {
@@ -205,6 +205,14 @@ class _TestDisplayState extends State<TestDisplay> {
   @override
   Widget build(BuildContext context) {
     RaisedButton submit = RaisedButton(child: Text("Submit"), onPressed: () { check(context); } );
-    return Scaffold(appBar: AppBar(title: Text("Geeky Math - Test")), body: Container(child: Column(children: <Widget>[test.display, submit])));
+    if(test is RandomTest) {
+      display = test.display;
+    }
+    else if(test is ClassroomTest && !questionsDelivered) {
+      display = test.getQuestions();
+      questionsDelivered = true;
+    }
+
+    return Scaffold(appBar: AppBar(title: Text("Geeky Math - Test")), body: Container(child: Column(children: <Widget>[display, submit])));
   }
 }

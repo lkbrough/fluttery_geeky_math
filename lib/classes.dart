@@ -160,9 +160,14 @@ class _TestCreationState extends State<TestCreation> {
 
   _TestCreationState(this.cid);
   
-  void newQuestion() {
+  void newQuestion(var context) {
     super.setState((){
-      questions.add(QuestionCreation());
+      if(questions.length < 10) {
+        questions.add(QuestionCreation());
+      }
+      else {
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Currently cannot support more than 10 questions")));
+      }
     });
 
   }
@@ -192,7 +197,7 @@ class _TestCreationState extends State<TestCreation> {
         },)),
         RaisedButton(onPressed: (){ submit(context); }, child: Text("Submit")),
       ])),
-      floatingActionButton: FloatingActionButton(onPressed: newQuestion, child: Icon(Icons.add)),
+      floatingActionButton: FloatingActionButton(onPressed: () { newQuestion(context); }, child: Icon(Icons.add)),
     );
   }
 }
