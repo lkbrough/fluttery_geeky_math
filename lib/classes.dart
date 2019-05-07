@@ -18,11 +18,20 @@ class _ClassesState extends State<Classes> {
 
   _ClassesState(this._auth, this.cid, this.isTeacher);
 
-  void teacherCheck(var context, var document) {
+  void studentInfoTeacherCheck(var context, var document) {
     if(isTeacher) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => StudentInfo(cid, document)));
     }
       return;
+  }
+
+  void testTeacherCheck(var context, var document, var tid) {
+    if(isTeacher) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => TestInfo(cid, tid, document)));
+    }
+    else {
+      // add student code to take the test here
+    }
   }
   
   @override
@@ -48,7 +57,7 @@ class _ClassesState extends State<Classes> {
                     children: snapshot.data.documents.map((DocumentSnapshot document) {
                       return new ListTile(
                         title: Text(document['name']),
-                        onTap: (){teacherCheck(context, document); },
+                        onTap: (){studentInfoTeacherCheck(context, document); },
                       );
                     }).toList(),
                   ));
@@ -67,6 +76,7 @@ class _ClassesState extends State<Classes> {
               children: snapshot.data.documents.map((DocumentSnapshot document) {
                 return new ListTile(
                   title: new Text(document['name']),
+                  onTap: (){testTeacherCheck(context, document, document.documentID); },
                 );
             }).toList(),
             ));
@@ -106,9 +116,31 @@ class StudentInfo extends StatelessWidget {
 }
 
 class TestInfo extends StatelessWidget {
+  DocumentSnapshot testInfo;
+  var cid;
+  var tid;
+
+  TestInfo(this.cid, this.tid, this.testInfo);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+
+    return Scaffold(appBar: AppBar(title: Text("Test ${testInfo["name"]}")), body: Container(child: Column(children: <Widget>[StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('classes').document('$cid').collection('tests').document('$tid').collection('questions').snapshots(),
+      builder: (BuildContext subContext, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError)
+          return Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting: return Text('Loading...');
+          default:
+            return Expanded(child: ListView(padding: EdgeInsets.all(20),
+              children: snapshot.data.documents.map((DocumentSnapshot document) {
+                return Card(child: Container(padding: EdgeInsets.all(20), child: Column(children: <Widget>[Text("Decimal Number: ${document["decimal"]}"), Text("Binary Number: ${document["binary"]}"), Text("Type: ${document["type"] == 1?"Decimal to Binary":document["type"] == 2?"Binary to Decimal":"Random"}")],))
+                );}).toList(),
+            ));
+        }
+      })]
+    )));
   }
 }
 
@@ -146,7 +178,7 @@ class _TestCreationState extends State<TestCreation> {
       newDocument.collection('questions').document().setData({"type": i._type, "decimal": decimalNumber, "binary": binaryNumber});
     }
 
-    newDocument.setData({"avaliable" : true, "name" : _testName.text, "reveal_all" : true, "taken_by": {} });
+    newDocument.setData({"avaliable" : true, "name" : _testName.text, "reveal_all" : true, "taken_by": [] });
 
     Navigator.pop(context);
   }
