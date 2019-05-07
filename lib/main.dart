@@ -10,9 +10,33 @@ Future<void> signOut() async{
   return _auth.signOut();
 }
 
+// Color Palatte: https://colorhunt.co/palette/138016
+// Colors.grey.shade200
+// Colors.tealAccent.shade400
+// Colors.lightBlue.shade600
+// Colors.grey.shade800
+
 void main() => runApp(MaterialApp(title: 'Geeky Math',
   theme: ThemeData(
-
+    accentColor: Colors.grey.shade200,
+    accentColorBrightness: Brightness.light,
+    backgroundColor: Colors.grey.shade800,
+    bottomAppBarColor: Colors.tealAccent.shade400,
+    brightness: Brightness.dark,
+    buttonColor: Colors.tealAccent.shade400,
+    canvasColor: Colors.grey.shade800,
+    cardColor: Colors.teal.shade900,
+    cursorColor: Colors.lightBlue.shade600,
+    dialogBackgroundColor: Colors.tealAccent.shade400,
+    dividerColor: Colors.grey.shade200,
+    disabledColor: Colors.grey.shade200,
+    errorColor: Colors.grey.shade200,
+    hintColor: Colors.lightBlue.shade600,
+    indicatorColor: Colors.tealAccent.shade700,
+    primaryColor: Colors.grey.shade800,
+    primaryColorBrightness: Brightness.dark,
+    scaffoldBackgroundColor: Colors.grey.shade800,
+    splashColor: Colors.tealAccent.shade400,
   ),
   home: LoginScreen(),
 ));
