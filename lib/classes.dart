@@ -82,7 +82,7 @@ class _ClassesState extends State<Classes> {
             ));
         }
       },
-    ), Container(child: Align(alignment: Alignment.bottomRight, child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[FloatingActionButton(child: Icon(Icons.add), onPressed: (() {Navigator.push(context, MaterialPageRoute(builder: (context) => TestCreation(cid)));}))])), padding: EdgeInsets.all(17)),
+    ), isTeacher?Container(child: Align(alignment: Alignment.bottomRight, child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[FloatingActionButton(child: Icon(Icons.add), onPressed: (() {Navigator.push(context, MaterialPageRoute(builder: (context) => TestCreation(cid)));}))])), padding: EdgeInsets.all(17)):Text(""),
     ]))],
         )
     )
