@@ -99,7 +99,7 @@ class StudentInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
-    Text avg = Text("Test Average: ${info["score_avg"]}");
+    Text avg = Text("Test Average: ${info["score_avg"].toStringAsFixed(2)}");
 
     var test_names = info["test_scores"].keys.toList();
     var test_scores = info["test_scores"].values.toList();
@@ -107,7 +107,7 @@ class StudentInfo extends StatelessWidget {
     ListView scores = ListView.builder(
         itemCount: info["test_scores"].entries.length,
         itemBuilder: (BuildContext ctxt, int index) {
-          return ListTile(title: Text("${test_names[index]}"), subtitle: Text("${test_scores[index]}"));
+          return ListTile(title: Text("${test_names[index]}"), subtitle: Text("${test_scores[index].toStringAsFixed(2)}"));
         });
 
 
