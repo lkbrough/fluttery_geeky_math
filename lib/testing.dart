@@ -15,24 +15,27 @@ class Question {
     }
     else if (type == 2) {
       answer = question;
-      question = int.parse(answer).toRadixString(2);
+      question = int.parse(question).toRadixString(2);
       hint = "Convert number above to Decimal";
     }
     else if (type == 3) {
       var random = new Random();
       if(random.nextBool()){
         answer = question;
-        question = int.parse(answer).toRadixString(2);
+        question = int.parse(question).toRadixString(2);
         hint = "Convert number above to Decimal";
+
       }
       else {
         answer = int.parse(question).toRadixString(2);
         hint = "Convert number above to Binary";
       }
     }
+    print("Question: $question\tAnswer: $answer");
   }
 
   bool check(var response){
+    print("Answer: $answer\tRepsonse: $response");
     return response == answer;
   }
 
@@ -41,16 +44,21 @@ class Question {
 class ClassroomTest{
   var uid, cid, tid; // user id, classroom id, test id
   List<TextEditingController> textEditingControllers;
+  List<int> randomQuestionTypes;
 
   ClassroomTest(this.uid, this.cid, this.tid);
 
   Widget getQuestions(){
     textEditingControllers = List(10);
+    randomQuestionTypes = List(10);
+
     for(int i = 0; i < 10; i++) {
       textEditingControllers[i] = new TextEditingController();
+      randomQuestionTypes[i] = Random().nextInt(2) + 1;
     }
     int index = -1;
     Question q;
+    int type;
 
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('classes').document('$cid').collection('tests').document('$tid').collection('questions').snapshots(),
@@ -64,7 +72,13 @@ class ClassroomTest{
               shrinkWrap: true,
               children: snapshot.data.documents.map((DocumentSnapshot document) {
                 index++;
-                q = Question(document.data['type'], document.data['decimal'].toString());
+                if(document.data['type'] == 3) {
+                  type = randomQuestionTypes[index];
+                }
+                else {
+                  type = document.data['type'];
+                }
+                q = Question(type, document.data['decimal'].toString());
                 return Card(child: Container(padding: EdgeInsets.all(16), child: Column(children: <Widget>[
                   Text("${q.question}", style: TextStyle(fontSize: 24)),
                   Divider(),
@@ -85,10 +99,17 @@ class ClassroomTest{
     Question q;
     int correct = 0;
     int count = 0;
+    int type;
 
     Firestore.instance.collection("classes").document("$cid").collection("tests").document("$tid").collection("questions").snapshots().listen( (data) {
       data.documents.forEach( (d) {
-        q = Question(d.data['type'], d.data['decimal'].toString());
+        if(d.data['type'] == 3) {
+          type = randomQuestionTypes[count];
+        }
+        else {
+          type = d.data['type'];
+        }
+        q = Question(type, d.data['decimal'].toString());
         if(q.check(textEditingControllers[count].text)){
           correct++;
         }
