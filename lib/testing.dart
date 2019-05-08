@@ -161,6 +161,7 @@ class RandomTest {
     }
     else {
       previousResponse = <String>["Incorrect", "${currentQuestion.answer}"];
+      streak = 0;
     }
 
     response.clear();
