@@ -57,10 +57,10 @@ class _ClassesState extends State<Classes> {
                 default:
                   return Expanded(child: ListView(
                     children: snapshot.data.documents.map((DocumentSnapshot document) {
-                      return new ListTile(
+                      return Column(children: [ListTile(
                         title: Text(document['name']),
                         onTap: (){studentInfoTeacherCheck(context, document); },
-                      );
+                      ), Divider()]);
                     }).toList(),
                   ));
               }
@@ -76,10 +76,10 @@ class _ClassesState extends State<Classes> {
           default:
             return Expanded(child: ListView(
               children: snapshot.data.documents.map((DocumentSnapshot document) {
-                return new ListTile(
-                  title: new Text(document['name']),
+                return Column(children: [ListTile(
+                  title: Text(document['name']),
                   onTap: (){testTeacherCheck(context, document, document.documentID); },
-                );
+                ), Divider()]);
             }).toList(),
             ));
         }

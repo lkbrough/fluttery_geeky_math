@@ -34,7 +34,7 @@ class MainMenu extends StatelessWidget {
     ListTile classManage = ListTile(title: Text("Classroom"), leading: Icon(Icons.school), onTap: (){ goToClass(context); } );
     ListTile randomTest = ListTile(title: Text("Training"), leading: Icon(Icons.fitness_center), onTap: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => RandomTestSelection(_auth))); } );
 
-    menu = Container(child: Center(child: Column(children: <Widget>[classManage, randomTest],)));
+    menu = Container(child: Center(child: Column(children: <Widget>[classManage, Divider(), randomTest, Divider(), ],)));
 
     return Scaffold(appBar: AppBar(title: Text("Geeky Math - Menu")), body: menu);
   }
@@ -53,7 +53,7 @@ class RandomTestSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> selections = List<Widget>.generate(3, (int index) {
-      return ListTile(title: Text("${test_types[index]}"), onTap: (){ startTest(context, index); });
+      return Column(children: [ListTile(title: Text("${test_types[index]}"), onTap: (){ startTest(context, index); }), Divider()]);
     });
 
     return Scaffold(appBar: AppBar(title: Text("Geeky Math - Select Test")), body: Container(child: Column(children: selections)));
