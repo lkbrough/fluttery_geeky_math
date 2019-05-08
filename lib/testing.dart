@@ -11,7 +11,7 @@ class Question {
   Question(this.type, this.question){
     if (type == 1) {
       answer = int.parse(question).toRadixString(2);
-      hint = "Convert number above to binary";
+      hint = "Convert number above to Binary";
     }
     else if (type == 2) {
       answer = question;
@@ -20,14 +20,14 @@ class Question {
     }
     else if (type == 3) {
       var random = new Random();
-      if(random.nextInt(1) == 2){
+      if(random.nextBool()){
         answer = question;
         question = int.parse(answer).toRadixString(2);
         hint = "Convert number above to Decimal";
       }
       else {
         answer = int.parse(question).toRadixString(2);
-        hint = "Convert number above to binary";
+        hint = "Convert number above to Binary";
       }
     }
   }
@@ -60,12 +60,12 @@ class ClassroomTest{
         switch (snapshot.connectionState) {
           case ConnectionState.waiting: return Text("Loading...");
           default:
-            return Expanded(child: ListView(
+            return Flexible(fit: FlexFit.loose, child: ListView(
               children: snapshot.data.documents.map((DocumentSnapshot document) {
                 index++;
                 q = Question(document.data['type'], document.data['decimal'].toString());
                 return Card(child: Container(padding: EdgeInsets.all(16), child: Column(children: <Widget>[
-                  Text("${q.question}"),
+                  Text("${q.question}", style: TextStyle(fontSize: 24)),
                   Divider(),
                   TextField(controller: textEditingControllers[index], decoration: InputDecoration(labelText: "${q.hint}",), keyboardType: TextInputType.number,)
                 ])));
@@ -139,7 +139,7 @@ class RandomTest {
       currentQuestion = Question(type, rand.nextInt(255).toString());
     }
 
-    questionCard = Card(child: Container(child: Column(children: <Widget>[Text("${currentQuestion.question}"),
+    questionCard = Card(child: Container(child: Column(children: <Widget>[Text("${currentQuestion.question}", style: TextStyle(fontSize: 24)),
       Divider(),
       TextField(controller: response, decoration: InputDecoration(labelText: "${currentQuestion.hint}"), keyboardType: TextInputType.number),
       Text(""),
@@ -213,6 +213,6 @@ class _TestDisplayState extends State<TestDisplay> {
       questionsDelivered = true;
     }
 
-    return Scaffold(appBar: AppBar(title: Text("Geeky Math - Test")), body: Container(child: Column(children: <Widget>[display, submit])));
+    return Scaffold(appBar: AppBar(title: Text("Geeky Math - Test")), body: Container(child: Column(children: <Widget>[display, submit], crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center,)));
   }
 }
