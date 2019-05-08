@@ -10,6 +10,8 @@ Future<void> signOut() async{
   return _auth.signOut();
 }
 
+final double betweenMargins = 8;
+
 // Color Palette: https://colorhunt.co/palette/138016
 // Colors.grey.shade200
 // Colors.tealAccent.shade400
@@ -18,6 +20,7 @@ Future<void> signOut() async{
 
 void main() => runApp(MaterialApp(title: 'Geeky Math',
   theme: ThemeData(
+    fontFamily: 'Raleway',
     accentColor: Colors.grey.shade200,
     accentColorBrightness: Brightness.light,
     backgroundColor: Colors.grey.shade800,
@@ -116,19 +119,21 @@ class LoginScreen extends StatelessWidget {
     Container loginScreen;
     Container signUpScreen;
 
-    TextField username = TextField(controller: _uname, decoration: InputDecoration(labelText: "Email",), keyboardType: TextInputType.emailAddress, );
-    TextField password = TextField(controller: _pword, decoration: InputDecoration(labelText: "Password",), keyboardType: TextInputType.text, obscureText: true,);
-    TextField usernameSignUp = TextField(controller: _unameSignUp, decoration: InputDecoration(labelText: "Email",), keyboardType: TextInputType.emailAddress,);
-    TextField passwordSignUp = TextField(controller: _pwordSignUp, decoration: InputDecoration(labelText: "Password",), keyboardType: TextInputType.text, obscureText: true,);
-    TextField firstname = TextField(controller: _fname, decoration: InputDecoration(labelText: "First Name",), keyboardType: TextInputType.text,);
-    TextField lastname = TextField(controller: _lname, decoration: InputDecoration(labelText: "Last Name",), keyboardType: TextInputType.text,);
-    TextField password2 = TextField(controller: _pword2, decoration: InputDecoration(labelText: "Re-Enter Password",), keyboardType: TextInputType.text, obscureText: true,);
+    Container title = Container(child: Text("Geeky Math", style: TextStyle(fontFamily: 'Ubuntu', fontSize: 36)), padding: EdgeInsets.all(betweenMargins));
+
+    TextField username = TextField(controller: _uname, decoration: InputDecoration(labelText: "Email", border: OutlineInputBorder()), keyboardType: TextInputType.emailAddress, );
+    TextField password = TextField(controller: _pword, decoration: InputDecoration(labelText: "Password", border: OutlineInputBorder()), keyboardType: TextInputType.text, obscureText: true,);
+    TextField usernameSignUp = TextField(controller: _unameSignUp, decoration: InputDecoration(labelText: "Email", border: OutlineInputBorder()), keyboardType: TextInputType.emailAddress,);
+    TextField passwordSignUp = TextField(controller: _pwordSignUp, decoration: InputDecoration(labelText: "Password", border: OutlineInputBorder()), keyboardType: TextInputType.text, obscureText: true,);
+    TextField firstname = TextField(controller: _fname, decoration: InputDecoration(labelText: "First Name", border: OutlineInputBorder()), keyboardType: TextInputType.text,);
+    TextField lastname = TextField(controller: _lname, decoration: InputDecoration(labelText: "Last Name", border: OutlineInputBorder()), keyboardType: TextInputType.text,);
+    TextField password2 = TextField(controller: _pword2, decoration: InputDecoration(labelText: "Re-Enter Password", border: OutlineInputBorder()), keyboardType: TextInputType.text, obscureText: true,);
 
     RaisedButton login = RaisedButton(child: Text("Login"), onPressed: (){ _handleSignIn(context, _uname.text.toString(), _pword.text.toString()); });
     RaisedButton signUp = RaisedButton(child: Text("Sign Up"), onPressed: (){ _newUser(context, _unameSignUp.text.toString(), _pwordSignUp.text.toString(), _pword2.text.toString(), _fname.text.toString(), _lname.text.toString()); });
 
-    loginScreen = Container(child: Column(children: [username, password, login]), padding: EdgeInsets.all(16));
-    signUpScreen = Container(child: Column(children: [usernameSignUp, passwordSignUp, password2, firstname, lastname, signUp]), padding: EdgeInsets.all(16));
+    loginScreen = Container(child: Column(children: [title, Container(child: username, padding: EdgeInsets.all(betweenMargins),), Container(child: password, padding: EdgeInsets.all(betweenMargins)), Container(child: login, padding: EdgeInsets.all(betweenMargins))], crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center,), padding: EdgeInsets.all(16));
+    signUpScreen = Container(child: Column(children: [title, Container(child: usernameSignUp, padding: EdgeInsets.all(betweenMargins)), Container(child: passwordSignUp, padding: EdgeInsets.all(betweenMargins)), Container(child: password2, padding: EdgeInsets.all(betweenMargins)), Container(child: firstname, padding: EdgeInsets.all(betweenMargins)), Container(child: lastname, padding: EdgeInsets.all(betweenMargins)), Container(child: signUp, padding: EdgeInsets.all(betweenMargins))], crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center,), padding: EdgeInsets.all(16));
 
     return DefaultTabController(length: 2, child:
     Scaffold(appBar:
