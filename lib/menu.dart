@@ -31,8 +31,8 @@ class MainMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     Container menu;
 
-    ListTile classManage = ListTile(title: Text("Your class"), onTap: (){ goToClass(context); } );
-    ListTile randomTest = ListTile(title: Text("Start a Random Test"), onTap: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => RandomTestSelection(_auth))); } );
+    ListTile classManage = ListTile(title: Text("Classroom"), leading: Icon(Icons.school), onTap: (){ goToClass(context); } );
+    ListTile randomTest = ListTile(title: Text("Training"), leading: Icon(Icons.fitness_center), onTap: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => RandomTestSelection(_auth))); } );
 
     menu = Container(child: Center(child: Column(children: <Widget>[classManage, randomTest],)));
 
