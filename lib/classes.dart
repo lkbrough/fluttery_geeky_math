@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttery_geeky_math/testing.dart';
 
+final double betweenPadding = 3;
+
 class Classes extends StatefulWidget {
   var _auth, cid, uid, isTeacher;
   Classes(this._auth, this.cid, this.uid, this.isTeacher);
@@ -99,7 +101,7 @@ class StudentInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
-    Text avg = Text("Test Average: ${info["score_avg"].toStringAsFixed(2)}");
+    Text avg = Text("Test Average: ${info["score_avg"].toStringAsFixed(2)}", style: TextStyle(fontSize: 18));
 
     var test_names = info["test_scores"].keys.toList();
     var test_scores = info["test_scores"].values.toList();
@@ -111,7 +113,7 @@ class StudentInfo extends StatelessWidget {
         });
 
 
-    return Scaffold(appBar: AppBar(title: Text("Student: ${info["name"]}")), body: Container(child: Column(children: <Widget>[avg, Divider(), Expanded(child: scores)]), padding: EdgeInsets.all(20)));
+    return Scaffold(appBar: AppBar(title: Text("Student: ${info["name"]}")), body: Container(child: Column(children: <Widget>[Container(child: avg, padding: EdgeInsets.all(15)), Divider(), Expanded(child: scores)]), padding: EdgeInsets.all(20)));
   }
 }
 
@@ -125,7 +127,7 @@ class TestInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(appBar: AppBar(title: Text("Test ${testInfo["name"]}")), body: Container(child: Column(children: <Widget>[StreamBuilder<QuerySnapshot>(
+    return Scaffold(appBar: AppBar(title: Text("${testInfo["name"]}")), body: Container(child: Column(children: <Widget>[StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('classes').document('$cid').collection('tests').document('$tid').collection('questions').snapshots(),
       builder: (BuildContext subContext, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError)
@@ -135,7 +137,7 @@ class TestInfo extends StatelessWidget {
           default:
             return Expanded(child: ListView(padding: EdgeInsets.all(20),
               children: snapshot.data.documents.map((DocumentSnapshot document) {
-                return Card(child: Container(padding: EdgeInsets.all(20), child: Column(children: <Widget>[Text("Decimal Number: ${document["decimal"]}"), Text("Binary Number: ${document["binary"]}"), Text("Type: ${document["type"] == 1?"Decimal to Binary":document["type"] == 2?"Binary to Decimal":"Random"}")],))
+                return Card(child: Container(padding: EdgeInsets.all(20), child: Column(children: <Widget>[Container(child: Text("Decimal Number: ${document["decimal"]}"), padding: EdgeInsets.all(betweenPadding)), Container(child: Text("Binary Number: ${document["binary"]}"), padding: EdgeInsets.all(betweenPadding)), Container(child:Text("Type: ${document["type"] == 1?"Decimal to Binary":document["type"] == 2?"Binary to Decimal":"Random"}"), padding: EdgeInsets.all(betweenPadding))],))
                 );}).toList(),
             ));
         }
