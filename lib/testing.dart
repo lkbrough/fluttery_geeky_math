@@ -61,6 +61,7 @@ class ClassroomTest{
           case ConnectionState.waiting: return Text("Loading...");
           default:
             return Flexible(fit: FlexFit.loose, child: ListView(
+              shrinkWrap: true,
               children: snapshot.data.documents.map((DocumentSnapshot document) {
                 index++;
                 q = Question(document.data['type'], document.data['decimal'].toString());
