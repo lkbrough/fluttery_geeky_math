@@ -152,13 +152,13 @@ class RandomTest {
 
     Random rand = new Random();
     if (streak < 15) {
-      currentQuestion = Question(type, rand.nextInt(15).toString());
+      currentQuestion = Question(type, rand.nextInt(16).toString());
     }
     else if (streak < 30) {
-      currentQuestion = Question(type, rand.nextInt(63).toString());
+      currentQuestion = Question(type, rand.nextInt(64).toString());
     }
     else {
-      currentQuestion = Question(type, rand.nextInt(255).toString());
+      currentQuestion = Question(type, rand.nextInt(256).toString());
     }
 
     questionCard = Card(child: Container(child: Column(children: <Widget>[Text("${currentQuestion.question}", style: TextStyle(fontSize: 24)),
