@@ -47,7 +47,7 @@ class UserProfile extends StatelessWidget {
             return Expanded(child: ListView(children: <Widget>[
               ListTile(title: Text("${snapshot.data['first_name']} ${snapshot.data['last_name']}")),
               Divider(),
-              ListTile(title: Text("${snapshot.data['class_id']}"), onTap: () { addClass(context); } ,),
+              ListTile(title: Text("${snapshot.data['class_id']}"), onTap: () { if(!snapshot.data['teacher']) { addClass(context); } } ,),
               Divider(),
             ],));
         }
