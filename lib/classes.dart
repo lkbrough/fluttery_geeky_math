@@ -65,7 +65,9 @@ class _ClassesState extends State<Classes> {
                   ));
               }
             },
-          )])),
+          ),
+            isTeacher?Container(child: Align(alignment: Alignment.bottomRight, child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[FloatingActionButton(child: Icon(Icons.person_add), onPressed: (() { showDialog(context: context, builder: (BuildContext c) => AlertDialog(title: Text("Class Code"), content: Text("${cid}"), )); }))])), padding: EdgeInsets.all(17)):Text(""),
+          ])),
     Container(child: Column(children: <Widget>[StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('classes').document("$cid").collection('tests').snapshots(),
       builder: (BuildContext subContext, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -84,7 +86,8 @@ class _ClassesState extends State<Classes> {
             ));
         }
       },
-    ), isTeacher?Container(child: Align(alignment: Alignment.bottomRight, child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[FloatingActionButton(child: Icon(Icons.add), onPressed: (() {Navigator.push(context, MaterialPageRoute(builder: (context) => TestCreation(cid)));}))])), padding: EdgeInsets.all(17)):Text(""),
+    ),
+      isTeacher?Container(child: Align(alignment: Alignment.bottomRight, child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[FloatingActionButton(child: Icon(Icons.add), onPressed: (() {Navigator.push(context, MaterialPageRoute(builder: (context) => TestCreation(cid)));}))])), padding: EdgeInsets.all(17)):Text(""),
     ]))],
         )
     )
