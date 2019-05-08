@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttery_geeky_math/testing.dart';
 import 'package:fluttery_geeky_math/classes.dart';
+import 'package:fluttery_geeky_math/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 final int test_options = 3;
@@ -27,14 +28,21 @@ class MainMenu extends StatelessWidget {
     });
   }
 
+  void goToProfile(var context){
+    _auth.currentUser().then( (u) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfile(_auth, u.uid)));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Container menu;
 
     ListTile classManage = ListTile(title: Text("Classroom"), leading: Icon(Icons.school), onTap: (){ goToClass(context); } );
     ListTile randomTest = ListTile(title: Text("Training"), leading: Icon(Icons.fitness_center), onTap: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => RandomTestSelection(_auth))); } );
+    ListTile profile = ListTile(title: Text("Profile"), leading: Icon(Icons.person), onTap: (){ goToProfile(context); });
 
-    menu = Container(child: Center(child: Column(children: <Widget>[classManage, Divider(), randomTest, Divider(), ],)));
+    menu = Container(child: Center(child: Column(children: <Widget>[profile, Divider(), classManage, Divider(), randomTest, Divider(), ],)));
 
     return Scaffold(appBar: AppBar(title: Text("Geeky Math - Menu")), body: menu);
   }
