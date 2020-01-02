@@ -104,13 +104,14 @@ class Solver {
   List<Step> solveDecimalMultiplication() {
     List<Step> lists = [Step(title: Text("Question"), content: Text(answer))];
     int current = 0;
+    var answerString = answer.toString();
 
-    for(int i = 0; i < answer.length(); i++) {
+    for(int i = 0; i < answerString.length; i++) {
       lists.add(Step(
         title: Text("Multiply by 2 and add current position."),
-        content: Text("$current * 2 + ${answer[i]} = ${(current * 2) + int.parse(answer[i])}"),
+        content: Text("$current * 2 + ${answerString[i]} = ${(current * 2) + int.parse(answerString[i])}"),
       ));
-      current = (current * 2) + int.parse(answer[i]);
+      current = (current * 2) + int.parse(answerString[i]);
     }
 
     return lists;
@@ -120,13 +121,14 @@ class Solver {
     List<Step> lists = [Step(title: Text("Question"), content: Text(answer))];
     int currentPower = 1;
     int current = 0;
+    var answerString = answer.toString();
 
-    for(int i = 0; i < answer.length(); i++) {
+    for(int i = 0; i < answerString.length; i++) {
       lists.add(Step(
         title: Text("Multiply by place value"),
-        content: Text("$current + (${answer[i]} * ${pow(2, currentPower)}) = ${int.parse(answer[i]) * pow(2, currentPower)}")
+        content: Text("$current + (${answerString[i]} * ${pow(2, currentPower)}) = ${int.parse(answerString[i]) * pow(2, currentPower)}")
       ));
-      current += int.parse(answer[i]) * pow(2, currentPower);
+      current += int.parse(answerString[i]) * pow(2, currentPower);
       currentPower++;
     }
 
