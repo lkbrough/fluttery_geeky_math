@@ -43,14 +43,11 @@ class Question {
     var solver = Solver(int.parse(this.question));
     var widget;
     var num;
-    print("!!!!!!!!!!!!!!!!!");
     if(hint == "Convert number above to Binary"){
-      print("*****************");
       num = int.parse(this.question);
       widget = solver.solveDecimal(num);
     }
     else if(hint == "Convert number above to Decimal"){
-      print("~~~~~~~~~~~~~~~~~");
       num = int.parse(this.question);
       widget = solver.solveBinary(num);
     }

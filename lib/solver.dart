@@ -31,7 +31,7 @@ class Solver {
         ]
     );
     ListView listView = ListView(children: <Widget>[list],);
-    simpleDialog = SimpleDialog(children: <Widget>[listView],);
+    simpleDialog = SimpleDialog(children: <Widget>[Container(child: listView, height: 500.0, width: 500.0,)],);
     return simpleDialog;
   }
 
@@ -57,7 +57,7 @@ class Solver {
         ]
     );
     ListView listView = ListView(children: <Widget>[list],);
-    simpleDialog = SimpleDialog(children: <Widget>[listView],);
+    simpleDialog = SimpleDialog(children: <Widget>[Container(child: listView, height: 750.0, width: 500.0,)],);
     return simpleDialog;
   }
 
