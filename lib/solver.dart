@@ -20,19 +20,19 @@ class Solver {
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return ListTile(title: Text("Remainder Method"));
               },
-            body: Container(child: ListView(children: solveBinaryReminder()), height: 500.0, width: 400.0),
+            body: Container(child: ListView(children: solveBinaryReminder()), height: 500.0, width: 500.0),
           ),
           ExpansionPanelRadio(
               value: "Subtration",
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return ListTile(title: Text("Subtraction Method"));
               },
-              body: Container(child: ListView(children: solveBinarySubtraction()), height: 500.0, width: 400.0),
+              body: Container(child: ListView(children: solveBinarySubtraction()), height: 500.0, width: 500.0),
           ),
         ]
     );
     ListView listView = ListView(children: <Widget>[list],);
-    simpleDialog = SimpleDialog(children: <Widget>[Container(child: listView, height: 500.0, width: 500.0,)],);
+    simpleDialog = SimpleDialog(children: <Widget>[Container(child: listView, height: 750.0, width: 500.0,)],);
     return simpleDialog;
   }
 
@@ -47,14 +47,14 @@ class Solver {
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return ListTile(title: Text("Multiplication Method"));
               },
-            body: Container(child: ListView(children: solveDecimalMultiplication()), height: 500.0, width: 400.0),
+            body: Container(child: ListView(children: solveDecimalMultiplication()), height: 400.0, width: 500.0),
           ),
           ExpansionPanelRadio(
               value: "Number Line",
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return ListTile(title: Text("Number Line Method"));
               },
-            body: Container(child: ListView(children: solveDecimalNumberLine()), height: 500.0, width: 400.0),
+            body: Container(child: ListView(children: solveDecimalNumberLine()), height: 400.0, width: 500.0),
           ),
         ]
     );
@@ -90,7 +90,7 @@ class Solver {
     ));
 
     while(current > 0) {
-      if (current > pow(2, currentPower)) {
+      if (current >= pow(2, currentPower)) {
         lists.add(ListTile(
           title: Text("Subtraction - 1"),
           subtitle: Text("$current - ${pow(2, currentPower)} = ${current - pow(2, currentPower)}"),
@@ -103,8 +103,13 @@ class Solver {
           subtitle: Text("Place value is bigger. Enter a 0."),)
         );
       }
-      currentPower++;
+      currentPower--;
     }
+
+    lists.add(ListTile(
+        title: Text("Fill in Remaining"),
+        subtitle: Text("Fill in remaining powers until power of zero.")
+    ));
 
     lists.add(ListTile(title: Text("Answer"), subtitle: Text(answer.toString())));
     return lists;
