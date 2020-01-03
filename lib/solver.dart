@@ -20,14 +20,14 @@ class Solver {
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return ListTile(title: Text("Remainder Method"));
               },
-              body: Stepper(steps: solveBinaryReminder())
+            body: Container(child: ListView(children: solveBinaryReminder()), height: 500.0, width: 400.0),
           ),
           ExpansionPanelRadio(
               value: "Subtration",
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return ListTile(title: Text("Subtraction Method"));
               },
-              body: Stepper(steps: solveBinarySubtraction())
+              body: Container(child: ListView(children: solveBinarySubtraction()), height: 500.0, width: 400.0),
           ),
         ]
     );
@@ -47,14 +47,14 @@ class Solver {
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return ListTile(title: Text("Multiplication Method"));
               },
-              body: Stepper(steps: solveDecimalMultiplication())
+            body: Container(child: ListView(children: solveDecimalMultiplication()), height: 500.0, width: 400.0),
           ),
           ExpansionPanelRadio(
               value: "Number Line",
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return ListTile(title: Text("Number Line Method"));
               },
-              body: Stepper(steps: solveDecimalNumberLine())
+            body: Container(child: ListView(children: solveDecimalNumberLine()), height: 500.0, width: 400.0),
           ),
         ]
     );
@@ -63,86 +63,86 @@ class Solver {
     return simpleDialog;
   }
 
-  List<Step> solveBinaryReminder() {
+  List<Widget> solveBinaryReminder() {
     var current = question;
-    List<Step> lists = [Step(title: Text("Question"), content: Text("$question"))];
+    List<Widget> lists = [ListTile(title: Text("Question"), subtitle: Text("$question"))];
 
     while(current > 0) {
-       lists.add(Step(
+       lists.add(ListTile(
         title: Text("Division and Remainder"),
-        content: Text("$current / 2 = ${(current/2).floor()} R: ${current%2}"),
+        subtitle: Text("$current / 2 = ${(current/2).floor()} R: ${current%2}"),
       ));
       current = (current / 2).floor();
     }
 
-    lists.add(Step(title: Text("Answer"), content: Text(answer.toString())));
+    lists.add(ListTile(title: Text("Answer"), subtitle: Text(answer.toString())));
     return lists;
   }
 
-  List<Step> solveBinarySubtraction() {
-    List<Step> lists = [Step(title: Text("Question"), content: Text("$question"))];
+  List<Widget> solveBinarySubtraction() {
+    List<Widget> lists = [ListTile(title: Text("Question"), subtitle: Text("$question"))];
     int current = question;
     int currentPower = answer.toString().length - 1;
 
-    lists.add(Step(
+    lists.add(ListTile(
       title: Text("Highest Power"),
-      content: Text("The highest power of two less than the question is ${pow(2, answer.toString().length - 1)}")
+      subtitle: Text("The highest power of two less than the question is ${pow(2, answer.toString().length - 1)}")
     ));
 
     while(current > 0) {
       if (current > pow(2, currentPower)) {
-        lists.add(Step(
+        lists.add(ListTile(
           title: Text("Subtraction - 1"),
-          content: Text("$current - ${pow(2, currentPower)} = ${current - pow(2, currentPower)}"),
+          subtitle: Text("$current - ${pow(2, currentPower)} = ${current - pow(2, currentPower)}"),
         ));
         current = current - pow(2, currentPower);
       }
       else {
-        lists.add(Step(
+        lists.add(ListTile(
           title: Text("Subtraction not necessary - 0"),
-          content: Text("Place value is bigger. Enter a 0."),)
+          subtitle: Text("Place value is bigger. Enter a 0."),)
         );
       }
       currentPower++;
     }
 
-    lists.add(Step(title: Text("Answer"), content: Text(answer.toString())));
+    lists.add(ListTile(title: Text("Answer"), subtitle: Text(answer.toString())));
     return lists;
   }
 
-  List<Step> solveDecimalMultiplication() {
-    List<Step> lists = [Step(title: Text("Question"), content: Text(question.toString()))];
+  List<Widget> solveDecimalMultiplication() {
+    List<Widget> lists = [ListTile(title: Text("Question"), subtitle: Text(question.toString()))];
     int current = 0;
     var questionString = question.toString();
 
     for(int i = 0; i < questionString.length; i++) {
-      lists.add(Step(
+      lists.add(ListTile(
         title: Text("Multiply by 2 and add current position."),
-        content: Text("$current * 2 + ${questionString[i]} = ${(current * 2) + int.parse(questionString[i])}"),
+        subtitle: Text("$current * 2 + ${questionString[i]} = ${(current * 2) + int.parse(questionString[i])}"),
       ));
       current = (current * 2) + int.parse(questionString[i]);
     }
 
-    lists.add(Step(title: Text("Answer"), content: Text(answer.toString())));
+    lists.add(ListTile(title: Text("Answer"), subtitle: Text(answer.toString())));
     return lists;
   }
 
-  List<Step> solveDecimalNumberLine() {
-    List<Step> lists = [Step(title: Text("Question"), content: Text(question.toString()))];
+  List<Widget> solveDecimalNumberLine() {
+    List<Widget> lists = [ListTile(title: Text("Question"), subtitle: Text(question.toString()))];
     int current = 0;
     var questionString = question.toString();
     int currentPower = questionString.length - 1;
 
     for(int i = 0; i < questionString.length; i++) {
-      lists.add(Step(
+      lists.add(ListTile(
         title: Text("Multiply by place value"),
-        content: Text("$current + (${questionString[i]} * ${pow(2, currentPower)}) = ${int.parse(questionString[i]) * pow(2, currentPower)}")
+        subtitle: Text("$current + (${questionString[i]} * ${pow(2, currentPower)}) = ${int.parse(questionString[i]) * pow(2, currentPower)}")
       ));
       current += int.parse(questionString[i]) * pow(2, currentPower);
       currentPower--;
     }
 
-    lists.add(Step(title: Text("Answer"), content: Text(answer.toString())));
+    lists.add(ListTile(title: Text("Answer"), subtitle: Text(answer.toString())));
     return lists;
   }
 }
