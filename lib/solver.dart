@@ -6,11 +6,12 @@ class Solver {
   var answer;
 
   Solver(this.question) {
-    answer = question.toRadixString(2);
+    answer = 0;
   }
 
   SimpleDialog solveBinary(int question) {
     this.question = question;
+    this.answer = question.toRadixString(2);
     SimpleDialog simpleDialog;
     ExpansionPanelList list = ExpansionPanelList.radio(
         children: [
@@ -37,6 +38,7 @@ class Solver {
 
   SimpleDialog solveDecimal(int question) {
     this.question = question;
+    this.answer = int.parse(question.toString(), radix: 2);
     SimpleDialog simpleDialog;
     ExpansionPanelList list = ExpansionPanelList.radio(
         children: [
@@ -62,25 +64,30 @@ class Solver {
   }
 
   List<Step> solveBinaryReminder() {
-    int current = question;
+    var current = question;
     List<Step> lists = [Step(title: Text("Question"), content: Text("$question"))];
 
     while(current > 0) {
        lists.add(Step(
         title: Text("Division and Remainder"),
-        content: Text("$current/2 = ${(current/2).floor()} R: ${current%2}"),
+        content: Text("$current / 2 = ${(current/2).floor()} R: ${current%2}"),
       ));
       current = (current / 2).floor();
     }
 
-    lists.add(Step(title: Text("Answer"), content: Text(answer)));
+    lists.add(Step(title: Text("Answer"), content: Text(answer.toString())));
     return lists;
   }
 
   List<Step> solveBinarySubtraction() {
     List<Step> lists = [Step(title: Text("Question"), content: Text("$question"))];
     int current = question;
-    int currentPower = answer.length()-1;
+    int currentPower = answer.toString().length - 1;
+
+    lists.add(Step(
+      title: Text("Highest Power"),
+      content: Text("The highest power of two less than the question is ${pow(2, answer.toString().length - 1)}")
+    ));
 
     while(current > 0) {
       if (current > pow(2, currentPower)) {
@@ -93,45 +100,49 @@ class Solver {
       else {
         lists.add(Step(
           title: Text("Subtraction not necessary - 0"),
-          content: Text("Place value is bigger."),)
-        ); "Place value would be bigger, enter a 0\n";
+          content: Text("Place value is bigger. Enter a 0."),)
+        );
       }
-      currentPower--;
+      currentPower++;
     }
+
+    lists.add(Step(title: Text("Answer"), content: Text(answer.toString())));
     return lists;
   }
 
   List<Step> solveDecimalMultiplication() {
-    List<Step> lists = [Step(title: Text("Question"), content: Text(answer))];
+    List<Step> lists = [Step(title: Text("Question"), content: Text(question.toString()))];
     int current = 0;
-    var answerString = answer.toString();
+    var questionString = question.toString();
 
-    for(int i = 0; i < answerString.length; i++) {
+    for(int i = 0; i < questionString.length; i++) {
       lists.add(Step(
         title: Text("Multiply by 2 and add current position."),
-        content: Text("$current * 2 + ${answerString[i]} = ${(current * 2) + int.parse(answerString[i])}"),
+        content: Text("$current * 2 + ${questionString[i]} = ${(current * 2) + int.parse(questionString[i])}"),
       ));
-      current = (current * 2) + int.parse(answerString[i]);
+      current = (current * 2) + int.parse(questionString[i]);
     }
 
+    lists.add(Step(title: Text("Answer"), content: Text(answer.toString())));
     return lists;
   }
 
   List<Step> solveDecimalNumberLine() {
-    List<Step> lists = [Step(title: Text("Question"), content: Text(answer))];
-    int currentPower = 1;
+    List<Step> lists = [Step(title: Text("Question"), content: Text(question.toString()))];
     int current = 0;
-    var answerString = answer.toString();
+    var questionString = question.toString();
+    int currentPower = questionString.length - 1;
 
-    for(int i = 0; i < answerString.length; i++) {
+    for(int i = 0; i < questionString.length; i++) {
       lists.add(Step(
         title: Text("Multiply by place value"),
-        content: Text("$current + (${answerString[i]} * ${pow(2, currentPower)}) = ${int.parse(answerString[i]) * pow(2, currentPower)}")
+        content: Text("$current + (${questionString[i]} * ${pow(2, currentPower)}) = ${int.parse(questionString[i]) * pow(2, currentPower)}")
       ));
-      current += int.parse(answerString[i]) * pow(2, currentPower);
-      currentPower++;
+      current += int.parse(questionString[i]) * pow(2, currentPower);
+      currentPower--;
     }
 
+    lists.add(Step(title: Text("Answer"), content: Text(answer.toString())));
     return lists;
   }
 }

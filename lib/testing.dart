@@ -45,11 +45,11 @@ class Question {
     var num;
     if(hint == "Convert number above to Binary"){
       num = int.parse(this.question);
-      widget = solver.solveDecimal(num);
+      widget = solver.solveBinary(num);
     }
     else if(hint == "Convert number above to Decimal"){
       num = int.parse(this.question);
-      widget = solver.solveBinary(num);
+      widget = solver.solveDecimal(num);
     }
 
     return widget;
